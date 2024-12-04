@@ -71,6 +71,7 @@ import {
   INDEX_PATTERN_URL_SEARCH_KEY,
 } from './components/visualization/text2viz';
 import { DEFAULT_DATA } from '../../../src/plugins/data/common';
+import { registerGenerateDashboardUIAction } from './ui_actions';
 
 export const [getCoreStart, setCoreStart] = createGetterSetter<CoreStart>('CoreStart');
 
@@ -386,6 +387,13 @@ export class AssistantPlugin
       });
       setVisNLQSavedObjectLoader(savedVisNLQLoader);
     }
+
+    registerGenerateDashboardUIAction({
+      core,
+      data,
+      uiActions,
+      assistantService: assistantServiceStart,
+    });
 
     setIndexPatterns(data.indexPatterns);
     setExpressions(expressions);

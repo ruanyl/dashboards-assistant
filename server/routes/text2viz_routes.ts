@@ -5,12 +5,14 @@
 
 import { schema } from '@osd/config-schema';
 import { IRouter } from '../../../../src/core/server';
+import { decideClient } from '../../../../src/plugins/data_source/common/util';
 import {
   TEXT2PPL_AGENT_CONFIG_ID,
   TEXT2VEGA_RULE_BASED_AGENT_CONFIG_ID,
   TEXT2VEGA_INPUT_SIZE_LIMIT,
   TEXT2VEGA_WITH_INSTRUCTIONS_AGENT_CONFIG_ID,
   TEXT2VIZ_API,
+  TEXT2DASHBOARD_AGENT_CONFIG_ID,
 } from '../../common/constants/llm';
 import { AssistantServiceSetup } from '../services/assistant_service';
 
@@ -125,6 +127,51 @@ export function registerText2VizRoutes(router: IRouter, assistantService: Assist
           index: req.body.index,
         });
 
+        const result = JSON.parse(response.body.inference_results[0].output[0].result);
+        return res.ok({ body: result });
+      } catch (e) {
+        context.assistant_plugin.logger.error('Execute agent failed!', e);
+        if (e.statusCode >= 400 && e.statusCode <= 499) {
+          return res.customError({
+            body: e.body,
+            statusCode: e.statusCode,
+            headers: e.headers,
+          });
+        } else {
+          return res.customError({
+            body: 'Execute agent failed!',
+            statusCode: 500,
+            headers: e.headers,
+          });
+        }
+      }
+    })
+  );
+
+  router.post(
+    {
+      path: TEXT2VIZ_API.DATA_INSIGHTS,
+      validate: {
+        body: schema.object({
+          input: schema.string(),
+        }),
+        query: schema.object({
+          dataSourceId: schema.maybe(schema.string()),
+        }),
+      },
+    },
+    router.handleLegacyErrors(async (context, req, res) => {
+      context.core.opensearch.client.asCurrentUser.indices.getMapping();
+      const assistantClient = assistantService.getScopedClient(req, context);
+      try {
+        const response = await assistantClient.executeAgentByConfigName(
+          TEXT2DASHBOARD_AGENT_CONFIG_ID,
+          {
+            sampleData: req.body.input,
+          }
+        );
+
+        console.log(response.body.inference_results[0].output[0].result);
         const result = JSON.parse(response.body.inference_results[0].output[0].result);
         return res.ok({ body: result });
       } catch (e) {
