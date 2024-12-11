@@ -11,6 +11,7 @@ import { ConfigSchema } from '../../common/types/config';
 import { IndexPatternsContract } from '../../../../src/plugins/data/public';
 import { ExpressionsStart } from '../../../../src/plugins/expressions/public';
 import { AssistantServiceStart } from './assistant_service';
+import { DashboardStart } from '../../../../src/plugins/dashboard/public';
 
 export * from './incontext_insight';
 export { ConversationLoadService } from './conversation_load_service';
@@ -40,6 +41,11 @@ export const [getHttp, setHttp] = createGetterSetter<HttpStart>('Http');
 
 export const [getAssistantService, setAssistantService] = createGetterSetter<AssistantServiceStart>(
   'AssistantServiceStart'
+);
+
+export const [getDashboard, setDashboard] = createGetterSetter<DashboardStart>('Dashboard');
+export const [getDashboardVersion, setDashboardVersion] = createGetterSetter<{ version: string }>(
+  'DashboardVersion'
 );
 
 export { DataSourceService, DataSourceServiceContract } from './data_source_service';

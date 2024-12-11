@@ -8,7 +8,8 @@ import { Operator } from './Operator';
 import { TEXT2VIZ_API } from '../../../common/constants/llm';
 
 interface Input {
-  sampleData: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sample: any;
   dataSourceId?: string;
 }
 
@@ -22,7 +23,7 @@ export class DataInsightsOperator<T extends Input>
 
   async execute<P extends T>(v: P) {
     const dataInsights: string = await this.getDataInsights(
-      JSON.stringify(v.sampleData),
+      JSON.stringify(v.sample.jsonData),
       v.dataSourceId
     );
     return { ...v, dataInsights };

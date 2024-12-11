@@ -44,6 +44,8 @@ import {
   setExpressions,
   setHttp,
   setAssistantService,
+  setDashboard,
+  setDashboardVersion,
 } from './services';
 import { ConfigSchema } from '../common/types/config';
 import { DataSourceService } from './services/data_source_service';
@@ -102,7 +104,7 @@ export class AssistantPlugin
   private resetChatSubscription: Subscription | undefined;
   private assistantService = new AssistantService();
 
-  constructor(initializerContext: PluginInitializerContext) {
+  constructor(private initializerContext: PluginInitializerContext) {
     this.config = initializerContext.config.get<ConfigSchema>();
     this.dataSourceService = new DataSourceService();
   }
@@ -324,7 +326,7 @@ export class AssistantPlugin
 
   public start(
     core: CoreStart,
-    { data, expressions, uiActions }: AssistantPluginStartDependencies
+    { data, expressions, uiActions, dashboard }: AssistantPluginStartDependencies
   ): AssistantStart {
     const assistantServiceStart = this.assistantService.start(core.http);
     setCoreStart(core);
@@ -395,9 +397,13 @@ export class AssistantPlugin
       assistantService: assistantServiceStart,
     });
 
+    const opensearchDashboardsVersion = this.initializerContext.env.packageInfo.version;
+
+    setDashboardVersion({ version: opensearchDashboardsVersion });
     setIndexPatterns(data.indexPatterns);
     setExpressions(expressions);
     setHttp(core.http);
+    setDashboard(dashboard);
 
     return {
       dataSource: this.dataSourceService.start(),

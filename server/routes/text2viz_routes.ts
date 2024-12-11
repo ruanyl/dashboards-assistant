@@ -167,13 +167,26 @@ export function registerText2VizRoutes(router: IRouter, assistantService: Assist
         const response = await assistantClient.executeAgentByConfigName(
           TEXT2DASHBOARD_AGENT_CONFIG_ID,
           {
-            sampleData: req.body.input,
+            dataSchema: req.body.input,
           }
         );
 
-        console.log(response.body.inference_results[0].output[0].result);
-        const result = JSON.parse(response.body.inference_results[0].output[0].result);
-        return res.ok({ body: result });
+        // console.log(response.body.inference_results[0].output[0].result);
+        let textContent = response.body.inference_results[0].output[0].result;
+
+        // extra content between tag <vega-lite></vega-lite>
+        const startTag = '<data-dimension>';
+        const endTag = '</data-dimension>';
+
+        const startIndex = textContent.indexOf(startTag);
+        const endIndex = textContent.indexOf(endTag);
+
+        if (startIndex !== -1 && endIndex !== -1 && startIndex < endIndex) {
+          // Extract the content between the tags
+          textContent = textContent.substring(startIndex + startTag.length, endIndex).trim();
+        }
+
+        return res.ok({ body: JSON.parse(textContent) });
       } catch (e) {
         context.assistant_plugin.logger.error('Execute agent failed!', e);
         if (e.statusCode >= 400 && e.statusCode <= 499) {

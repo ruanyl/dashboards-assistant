@@ -9,9 +9,10 @@ import { DataPublicPluginStart } from '../../../../../src/plugins/data/public';
 interface Input {
   ppl: string;
   dataSourceId: string | undefined;
+  pplSampleSize?: number;
 }
 
-const topN = (ppl: string, n: number) => `${ppl} | head ${n}`;
+const topN = (ppl: string, n: number = 2) => `${ppl} | head ${n}`;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export class PPLSampleOperator<T extends Input> implements Operator<T, { sample: any }> {
@@ -21,8 +22,8 @@ export class PPLSampleOperator<T extends Input> implements Operator<T, { sample:
     this.searchClient = searchClient;
   }
 
-  async execute<P extends T>(v: P, size: number = 3) {
-    const ppl = topN(v.ppl, size);
+  async execute<P extends T>(v: P) {
+    const ppl = topN(v.ppl, v.pplSampleSize);
     const res = await this.searchClient
       .search(
         { params: { body: { query: ppl } }, dataSourceId: v.dataSourceId },
