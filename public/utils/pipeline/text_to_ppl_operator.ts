@@ -13,14 +13,15 @@ interface Input {
   dataSourceId?: string;
 }
 
-export class Text2PPLOperator<T extends Input> implements Operator<T, { ppl: string }> {
+export class Text2PPLOperator extends Operator<Input, Input & { ppl: string }> {
   http: HttpSetup;
 
   constructor(http: HttpSetup) {
+    super();
     this.http = http;
   }
 
-  async execute<P extends T>(v: P) {
+  async execute<T extends Input>(v: T) {
     const ppl: string = await this.text2ppl(v.inputQuestion, v.index, v.dataSourceId);
     return { ...v, ppl };
   }

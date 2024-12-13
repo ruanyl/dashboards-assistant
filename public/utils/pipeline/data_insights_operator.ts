@@ -13,15 +13,15 @@ interface Input {
   dataSourceId?: string;
 }
 
-export class DataInsightsOperator<T extends Input>
-  implements Operator<T, { dataInsights: string }> {
+export class DataInsightsOperator extends Operator<Input, Input & { dataInsights: string }> {
   http: HttpSetup;
 
   constructor(http: HttpSetup) {
+    super();
     this.http = http;
   }
 
-  async execute<P extends T>(v: P) {
+  async execute<T extends Input>(v: T) {
     const dataInsights: string = await this.getDataInsights(
       JSON.stringify(v.sample.jsonData),
       v.dataSourceId

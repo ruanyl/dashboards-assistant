@@ -14,15 +14,15 @@ interface Input {
 
 const topN = (ppl: string, n: number = 2) => `${ppl} | head ${n}`;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class PPLSampleOperator<T extends Input> implements Operator<T, { sample: any }> {
+export class PPLSampleOperator extends Operator<Input, Input & { sample: string }> {
   searchClient: DataPublicPluginStart['search'];
 
   constructor(searchClient: DataPublicPluginStart['search']) {
+    super();
     this.searchClient = searchClient;
   }
 
-  async execute<P extends T>(v: P) {
+  async execute<T extends Input>(v: T) {
     const ppl = topN(v.ppl, v.pplSampleSize);
     const res = await this.searchClient
       .search(

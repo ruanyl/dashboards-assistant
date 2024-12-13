@@ -18,16 +18,17 @@ interface Input {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export class Text2VegaOperator<T extends Input> implements Operator<T, { vega: any }> {
+export class Text2VegaOperator extends Operator<Input, Input & { vega: any }> {
   http: HttpSetup;
   savedObjects: SavedObjectsStart;
 
   constructor(http: HttpSetup, savedObjects: SavedObjectsStart) {
+    super();
     this.http = http;
     this.savedObjects = savedObjects;
   }
 
-  async execute<P extends T>(v: P) {
+  async execute<T extends Input>(v: T) {
     const result = await this.text2vega({
       inputQuestion: v.inputQuestion,
       inputInstruction: v.inputInstruction,

@@ -4,23 +4,19 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { switchMap, tap, catchError, filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { switchMap, tap, catchError } from 'rxjs/operators';
 
 import { Operator } from './Operator';
 
 export class Pipeline {
-  input$ = new BehaviorSubject<any>(null);
+  input$ = new Subject<any>();
   output$: Observable<any>;
   status$ = new BehaviorSubject<'RUNNING' | 'STOPPED'>('STOPPED');
 
   constructor(private readonly operators: Array<Operator<any, any>>) {
     this.output$ = this.input$
-      .pipe(
-        // TODO: this is hard coded for now, we should provide feature to make the pipeline filter configurable
-        // filter((v) => v.inputQuestion.length > 0),
-        tap(() => this.status$.next('RUNNING'))
-      )
+      .pipe(tap(() => this.status$.next('RUNNING')))
       .pipe(
         switchMap((value) => {
           return this.operators
