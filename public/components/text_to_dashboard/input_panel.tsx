@@ -65,15 +65,6 @@ export const InputPanel = (props: Props) => {
   }
 
   useEffect(() => {
-    if (dataInsightsPipeline.current) {
-      dataInsightsPipeline.current.invoke({
-        ppl: `source=${props.indexPattern.getIndex()}`,
-        dataSourceId: props.dataSourceId,
-      });
-    }
-  }, [props.indexPattern, props.dataSourceId]);
-
-  useEffect(() => {
     let subscription: Subscription;
     if (dataInsightsPipeline.current) {
       subscription = dataInsightsPipeline.current.status$.subscribe((status) => {
@@ -102,6 +93,15 @@ export const InputPanel = (props: Props) => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (dataInsightsPipeline.current) {
+      dataInsightsPipeline.current.invoke({
+        ppl: `source=${props.indexPattern.getIndex()}`,
+        dataSourceId: props.dataSourceId,
+      });
+    }
+  }, [props.indexPattern, props.dataSourceId]);
 
   const onToggle = useCallback(
     (item: string) => {

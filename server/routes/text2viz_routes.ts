@@ -168,6 +168,7 @@ export function registerText2VizRoutes(router: IRouter, assistantService: Assist
           TEXT2DASHBOARD_AGENT_CONFIG_ID,
           {
             dataSchema: req.body.input,
+            userInstruction: '',
           }
         );
 
