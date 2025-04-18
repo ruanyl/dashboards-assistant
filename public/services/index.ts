@@ -12,6 +12,7 @@ import { IndexPatternsContract } from '../../../../src/plugins/data/public';
 import { ExpressionsStart } from '../../../../src/plugins/expressions/public';
 import { AssistantServiceStart } from './assistant_service';
 import chatIcon from '../assets/chat.svg';
+import { DashboardStart } from '../../../../src/plugins/dashboard/public';
 
 export * from './incontext_insight';
 export { ConversationLoadService } from './conversation_load_service';
@@ -48,3 +49,8 @@ export { DataSourceService, DataSourceServiceContract } from './data_source_serv
 export const getLogoIcon = (type: 'gray' | 'gradient' | 'white', defaultIcon = chatIcon) => {
   return getConfigSchema()?.branding?.logo?.[type] ?? defaultIcon;
 };
+
+export const [getDashboard, setDashboard] = createGetterSetter<DashboardStart>('Dashboard');
+export const [getDashboardVersion, setDashboardVersion] = createGetterSetter<{ version: string }>(
+  'DashboardVersion'
+);
