@@ -322,12 +322,12 @@ export const InputPanel = (props: Props) => {
           {panelStatus === 'DASHBOARDS_CREATED' ? (
             <>
               <EuiFlexItem grow={false}>
-                <EuiButton fill onClick={onGenerate}>
-                  Regenerate
+                <EuiButton fill onClick={props.onClose}>
+                  Done
                 </EuiButton>
               </EuiFlexItem>
               <EuiFlexItem grow={false}>
-                <EuiButton onClick={props.onClose}>Done</EuiButton>
+                <EuiButton onClick={onGenerate}>Regenerate</EuiButton>
               </EuiFlexItem>
             </>
           ) : (
