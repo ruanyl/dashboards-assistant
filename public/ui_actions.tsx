@@ -29,7 +29,7 @@ export function registerGenerateDashboardUIAction(services: Services) {
   services.uiActions.addTriggerAction(AI_ASSISTANT_QUERY_EDITOR_TRIGGER, {
     id: 'assistant_generate_dashboard_action',
     order: 10,
-    getDisplayName: () => 'Data insights',
+    getDisplayName: () => 'Generate insights',
     getIconType: () => 'dashboard' as const,
     // T2Viz is only compatible with data sources that have certain agents configured
     isCompatible: async (context) => {

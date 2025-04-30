@@ -286,8 +286,11 @@ export const InputPanel = (props: Props) => {
     <EuiFlyout onClose={props.onClose}>
       <EuiFlyoutHeader hasBorder>
         <EuiTitle size="m">
-          <h2>Suggested analytics</h2>
+          <h2>Available insights</h2>
         </EuiTitle>
+        <div style={{ marginTop: '5px' }}>
+          Select an insight metric from the lists below to add to a dashboard.
+        </div>
       </EuiFlyoutHeader>
       <EuiFlyoutBody>
         {panelStatus === 'INSIGHTS_LOADING' && (
@@ -317,14 +320,24 @@ export const InputPanel = (props: Props) => {
       <EuiFlyoutFooter>
         <EuiFlexGroup justifyContent="spaceBetween">
           <EuiFlexItem grow={false}>
-            <EuiButton
-              fill
-              onClick={onGenerate}
-              isLoading={panelStatus === 'DASHBOARDS_CREATING'}
-              isDisabled={selectedInsights.length === 0}
-            >
-              Generate dashboard
-            </EuiButton>
+            {selectedInsights.length === 0 ? (
+              <EuiButton
+                fill
+                onClick={onGenerate}
+                isLoading={panelStatus === 'DASHBOARDS_CREATING'}
+                isDisabled
+              >
+                Generate dashboard
+              </EuiButton>
+            ) : (
+              <EuiButton
+                fill
+                onClick={onGenerate}
+                isLoading={panelStatus === 'DASHBOARDS_CREATING'}
+              >
+                Generate {selectedInsights.length} insight(s) to dashboard
+              </EuiButton>
+            )}
           </EuiFlexItem>
         </EuiFlexGroup>
       </EuiFlyoutFooter>
