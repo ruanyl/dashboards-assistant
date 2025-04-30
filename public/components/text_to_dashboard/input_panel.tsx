@@ -318,27 +318,32 @@ export const InputPanel = (props: Props) => {
       </EuiFlyoutBody>
       {panelStatus === 'DASHBOARDS_CREATING' && <EuiProgress size="xs" color="accent" />}
       <EuiFlyoutFooter>
-        <EuiFlexGroup justifyContent="spaceBetween">
-          <EuiFlexItem grow={false}>
-            {selectedInsights.length === 0 ? (
+        <EuiFlexGroup direction="row" justifyContent="flexStart">
+          {panelStatus === 'DASHBOARDS_CREATED' ? (
+            <>
+              <EuiFlexItem grow={false}>
+                <EuiButton fill onClick={onGenerate}>
+                  Regenerate
+                </EuiButton>
+              </EuiFlexItem>
+              <EuiFlexItem grow={false}>
+                <EuiButton onClick={props.onClose}>Done</EuiButton>
+              </EuiFlexItem>
+            </>
+          ) : (
+            <EuiFlexItem grow={false}>
               <EuiButton
                 fill
                 onClick={onGenerate}
                 isLoading={panelStatus === 'DASHBOARDS_CREATING'}
-                isDisabled
+                isDisabled={selectedInsights.length === 0}
               >
-                Generate dashboard
+                {selectedInsights.length === 0
+                  ? 'Generate dashboard'
+                  : `Generate ${selectedInsights.length} insight(s) to dashboard`}
               </EuiButton>
-            ) : (
-              <EuiButton
-                fill
-                onClick={onGenerate}
-                isLoading={panelStatus === 'DASHBOARDS_CREATING'}
-              >
-                Generate {selectedInsights.length} insight(s) to dashboard
-              </EuiButton>
-            )}
-          </EuiFlexItem>
+            </EuiFlexItem>
+          )}
         </EuiFlexGroup>
       </EuiFlyoutFooter>
     </EuiFlyout>
